@@ -1,65 +1,49 @@
-import controller.RoomController;
-import model.enums.RoomType;
-import model.Room;
+import controller.ClientController;
+import model.Client;
 
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        RoomController roomController = new RoomController();
 
-        // Create Rooms
-        System.out.println("Creating rooms...");
-        roomController.createRoom(1, RoomType.SINGLE, 100.0);
-        roomController.createRoom(2, RoomType.DOUBLE, 150.0);
-        roomController.createRoom(3, RoomType.TRIPLE, 200.0);
+        // Create a ClientController instance to handle client operations
+        ClientController clientController = new ClientController();
 
-        // Get Room by ID
-        System.out.println("\nFetching room with ID 1...");
-        Room room1 = roomController.getRoom(1);
-        if (room1 != null) {
-            System.out.println("Room 1: " + room1.getRoomType() + ", Price: " + room1.getPrix());
+        // Uncomment the line below if you want to create a new client
+        // clientController.createClient(1, "John", "john@gmail.com", "0777777");
+
+        // Find a client by ID
+        Client client = clientController.findById(2);
+        if (client != null) {
+            System.out.println("Client found by ID: " + client.getName() + ", " + client.getEmail() + ", " + client.getPhone());
         } else {
-            System.out.println("Room not found.");
+            System.out.println("Client with ID 2 not found.");
         }
 
-        // Get All Rooms
-        System.out.println("\nFetching all rooms...");
-        List<Room> allRooms = roomController.getAllRooms();
-        for (Room room : allRooms) {
-            System.out.println("Room ID: " + room.getRoomNumber() + ", Type: " + room.getRoomType() + ", Price: " + room.getPrix());
+        // Update the client with ID 2
+        clientController.updateClient(2, "John Updated", "updated_john@gmail.com", "0999999");
+
+        // Find the updated client
+        Client updatedClient = clientController.findById(2);
+        if (updatedClient != null) {
+            System.out.println("Client after update: " + updatedClient.getName() + ", " + updatedClient.getEmail() + ", " + updatedClient.getPhone());
         }
 
-        // Update Room
-        System.out.println("\nUpdating room with ID 1...");
-        roomController.updateRoom(1, RoomType.SINGLE, 120.0);  // Change price of room 1
-
-        // Verify the update
-        System.out.println("\nVerifying update for room with ID 1...");
-        Room updatedRoom = roomController.getRoom(1);
-        if (updatedRoom != null) {
-            System.out.println("Updated Room 1: " + updatedRoom.getRoomType() + ", Price: " + updatedRoom.getPrix());
+        // Find and print all clients
+        System.out.println("\nAll Clients:");
+        List<Client> clients = clientController.findAll(); // Ensure this method prints inside ClientService or return a list
+        for (Client c : clients) {
+            System.out.println("Client ID: " + c.getId() + ", Name: " + c.getName() + ", Email: " + c.getEmail() + ", Phone: " + c.getPhone());
         }
 
-        // Delete Room
-        System.out.println("\nDeleting room with ID 3...");
-        roomController.deleteRoom(3);
+        // Delete a client by ID
+        clientController.deleteClient(2);
 
-        // Verify deletion
-        System.out.println("\nVerifying deletion for room with ID 3...");
-        Room deletedRoom = roomController.getRoom(3);
-        if (deletedRoom == null) {
-            System.out.println("Room 3 deleted successfully.");
-        } else {
-            System.out.println("Failed to delete room.");
-        }
-
-        // Fetch all remaining rooms after deletion
-        System.out.println("\nFetching all rooms after deletion...");
-        allRooms = roomController.getAllRooms();
-        for (Room room : allRooms) {
-            System.out.println("Room ID: " + room.getRoomNumber() + ", Type: " + room.getRoomType() + ", Price: " + room.getPrix());
+        // Try to find the deleted client
+        Client deletedClient = clientController.findById(2);
+        if (deletedClient == null) {
+            System.out.println("\nClient with ID 2 has been deleted.");
         }
     }
 }

@@ -11,6 +11,7 @@ public class RoomController {
 
     public RoomController() {
         this.roomService = new RoomService();
+
     }
 
     public void createRoom(int id, RoomType roomType, double prix) {

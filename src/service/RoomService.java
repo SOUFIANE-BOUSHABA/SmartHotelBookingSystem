@@ -14,10 +14,10 @@ public class RoomService {
     }
 
     public void createRoom(Room room) {
-        if (room.getPrix() > 0) {
+        if (room.getPrix() > 0 && room.getHotelId() > 0) {
             roomRepository.create(room);
         } else {
-            System.err.println(" prix must be positive");
+            System.err.println("Prix must be positive and hotelId must be valid");
         }
     }
 

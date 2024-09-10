@@ -6,12 +6,17 @@ public class Room {
     private  int id;
     private RoomType roomType;
     private double prix;
+    private int hotelId; // Foreign key reference to the hotel
 
-    public Room(int id, RoomType roomType, double prix) {
+    public Room(int id, RoomType roomType, double prix, int hotelId) {
         this.id = id;
         this.roomType = roomType;
         this.prix = prix;
+        this.hotelId = hotelId;
     }
+
+
+
 
 
     public int getRoomNumber() {
@@ -37,4 +42,16 @@ public class Room {
     public void setPrix(double prix) {
         this.prix = prix;
     }
+
+
+    public int getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(int hotelId) {
+        this.hotelId = hotelId;
+    }
+
+
+
 }

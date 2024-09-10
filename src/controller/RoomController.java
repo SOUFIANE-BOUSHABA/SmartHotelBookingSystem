@@ -14,8 +14,8 @@ public class RoomController {
 
     }
 
-    public void createRoom(int id, RoomType roomType, double prix) {
-        Room room = new Room(id, roomType, prix);
+    public void createRoom(int id, RoomType roomType, double prix, int hotelId) {
+        Room room = new Room(id, roomType, prix, hotelId);
         roomService.createRoom(room);
     }
 
@@ -27,10 +27,11 @@ public class RoomController {
         return roomService.getAllRooms();
     }
 
-    public void updateRoom(int id, RoomType roomType, double prix) {
-        Room room = new Room(id, roomType, prix);
+    public void updateRoom(int id, RoomType roomType, double prix, int hotelId) {
+        Room room = new Room(id, roomType, prix, hotelId);
         roomService.updateRoom(room);
     }
+
 
     public void deleteRoom(int id) {
         roomService.deleteRoom(id);

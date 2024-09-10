@@ -29,20 +29,21 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public void create(Room room) {
-        String sql = "INSERT INTO rooms (roomType, prix) VALUES (?, ?)";
+        String sql = "INSERT INTO rooms (roomType, prix, hotel_id) VALUES (?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, room.getRoomType().toString());
             preparedStatement.setDouble(2, room.getPrix());
+            preparedStatement.setInt(3, room.getHotelId());
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 room.setRoomNumber(generatedKeys.getInt(1));
-                System.out.println("Room created success id : " + room.getRoomNumber());
+                System.out.println("Room created with ID: " + room.getRoomNumber());
             }
         } catch (SQLException e) {
-            System.err.println("Failed  create room.");
+            System.err.println("Failed to create room.");
             e.printStackTrace();
         }
     }
@@ -59,14 +60,16 @@ public class RoomRepositoryImpl implements RoomRepository {
             if (resultSet.next()) {
                 room = new Room(resultSet.getInt("id"),
                         RoomType.valueOf(resultSet.getString("roomType")),
-                        resultSet.getDouble("prix"));
+                        resultSet.getDouble("prix"),
+                        resultSet.getInt("hotel_id"));
             }
         } catch (SQLException e) {
-            System.err.println("Failed  get room.");
+            System.err.println("Failed to get room.");
             e.printStackTrace();
         }
         return room;
     }
+
 
     @Override
     public List<Room> findAll() {
@@ -79,31 +82,35 @@ public class RoomRepositoryImpl implements RoomRepository {
             while (resultSet.next()) {
                 Room room = new Room(resultSet.getInt("id"),
                         RoomType.valueOf(resultSet.getString("roomType")),
-                        resultSet.getDouble("prix"));
+                        resultSet.getDouble("prix"),
+                        resultSet.getInt("hotel_id"));
                 rooms.add(room);
             }
         } catch (SQLException e) {
-            System.err.println("Failed  get rooms.");
+            System.err.println("Failed to get rooms.");
             e.printStackTrace();
         }
         return rooms;
     }
 
+
     @Override
     public void update(Room room) {
-        String sql = "UPDATE rooms SET roomType = ?, prix = ? WHERE id = ?";
+        String sql = "UPDATE rooms SET roomType = ?, prix = ?, hotel_id = ? WHERE id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, room.getRoomType().toString());
             preparedStatement.setDouble(2, room.getPrix());
-            preparedStatement.setInt(3, room.getRoomNumber());
+            preparedStatement.setInt(3, room.getHotelId());
+            preparedStatement.setInt(4, room.getRoomNumber());
             preparedStatement.executeUpdate();
-            System.out.println("Room updated success");
+            System.out.println("Room updated successfully");
         } catch (SQLException e) {
-            System.err.println("Failed  update room.");
+            System.err.println("Failed to update room.");
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void delete(int id) {

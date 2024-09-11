@@ -1,4 +1,5 @@
 package controller;
+
 import model.Reservation;
 import model.Room;
 import model.enums.PaymentStatus;
@@ -59,7 +60,15 @@ public class ReservationController {
         System.out.print("Enter the reservation ID to cancel: ");
         int reservationId = Integer.parseInt(scanner.nextLine());
 
-        reservationService.cancelReservation(reservationId);
+        reservationService.cancel(reservationId);
         System.out.println("Reservation cancelled successfully.");
+    }
+
+    public void showStatistics() {
+        double occupancyRate = reservationService.calculateOccupancyRate();
+        long canceledReservations = reservationService.countCanceledReservations();
+
+        System.out.println("Occupancy Rate: " + occupancyRate + "%");
+        System.out.println("Canceled Reservations: " + canceledReservations);
     }
 }

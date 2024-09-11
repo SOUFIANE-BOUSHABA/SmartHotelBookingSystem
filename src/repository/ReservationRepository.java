@@ -8,5 +8,6 @@ public interface ReservationRepository {
     void create(Reservation reservation);
     void cancel(int reservationId);
     List<Room> findAvailableRooms(LocalDate startDate, LocalDate endDate);
-    boolean checkDateAvailability(LocalDate startDate, LocalDate endDate);
+    boolean checkDateAvailability(int roomId, LocalDate startDate, LocalDate endDate);
+    List<Reservation> getAllReservations();
 }

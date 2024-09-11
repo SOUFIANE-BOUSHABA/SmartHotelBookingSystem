@@ -6,7 +6,7 @@ public class Room {
     private  int id;
     private RoomType roomType;
     private double prix;
-    private int hotelId; // Foreign key reference to the hotel
+    private int hotelId;
 
     public Room(int id, RoomType roomType, double prix, int hotelId) {
         this.id = id;

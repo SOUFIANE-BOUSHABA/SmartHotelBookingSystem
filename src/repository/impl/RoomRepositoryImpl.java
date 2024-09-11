@@ -29,24 +29,37 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public void create(Room room) {
-        String sql = "INSERT INTO rooms (roomType, prix, hotel_id) VALUES (?, ?, ?)";
+        String checkHotelSql = "SELECT hotel_id FROM hotels WHERE hotel_id = ?";
+        String insertRoomSql = "INSERT INTO rooms (roomType, prix, hotel_id) VALUES (?, ?, ?)";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, room.getRoomType().toString());
-            preparedStatement.setDouble(2, room.getPrix());
-            preparedStatement.setInt(3, room.getHotelId());
-            preparedStatement.executeUpdate();
+        try (PreparedStatement checkHotelStmt = connection.prepareStatement(checkHotelSql)) {
 
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                room.setRoomNumber(generatedKeys.getInt(1));
-                System.out.println("Room created with ID: " + room.getRoomNumber());
+            checkHotelStmt.setInt(1, room.getHotelId());
+            ResultSet hotelResultSet = checkHotelStmt.executeQuery();
+
+            if (!hotelResultSet.next()) {
+                System.err.println("Hotel with ID " + room.getHotelId() + " does not exist.");
+                return;
+            }
+
+            try (PreparedStatement insertRoomStmt = connection.prepareStatement(insertRoomSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                insertRoomStmt.setString(1, room.getRoomType().toString());
+                insertRoomStmt.setDouble(2, room.getPrix());
+                insertRoomStmt.setInt(3, room.getHotelId());
+                insertRoomStmt.executeUpdate();
+
+                ResultSet generatedKeys = insertRoomStmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    room.setRoomNumber(generatedKeys.getInt(1));
+                    System.out.println("Room created with ID: " + room.getRoomNumber());
+                }
             }
         } catch (SQLException e) {
             System.err.println("Failed to create room.");
             e.printStackTrace();
         }
     }
+
 
     @Override
     public Room findById(int id) {

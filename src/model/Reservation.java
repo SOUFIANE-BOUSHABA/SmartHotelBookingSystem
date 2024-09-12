@@ -9,15 +9,17 @@ public class Reservation {
     private LocalDate startDate;
     private LocalDate endDate;
     private String paymentStatus;
+    private double totalPrice;
 
-    // Constructor with all parameters
-    public Reservation(int id, int clientId, int roomId, LocalDate startDate, LocalDate endDate, String paymentStatus) {
+
+    public Reservation(int id, int clientId, int roomId, LocalDate startDate, LocalDate endDate, String paymentStatus , double totalPrice) {
         this.id = id;
         this.clientId = clientId;
         this.roomId = roomId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.paymentStatus = paymentStatus;
+        this.totalPrice = totalPrice;
     }
 
     // Default constructor
@@ -83,5 +85,13 @@ public class Reservation {
                 ", endDate=" + endDate +
                 ", paymentStatus='" + paymentStatus + '\'' +
                 '}';
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

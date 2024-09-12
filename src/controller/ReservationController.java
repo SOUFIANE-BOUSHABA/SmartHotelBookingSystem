@@ -50,7 +50,8 @@ public class ReservationController {
         System.out.print("Enter your client ID: ");
         int clientId = Integer.parseInt(scanner.nextLine());
 
-        Reservation reservation = new Reservation(0, clientId, roomId, startDate, endDate, PaymentStatus.PENDING.toString());
+        Reservation reservation = new Reservation(0, clientId, roomId, startDate, endDate, PaymentStatus.PENDING.toString(), 0.0);
+
         reservationService.createReservation(reservation);
     }
 

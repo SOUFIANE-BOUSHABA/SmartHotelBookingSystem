@@ -25,7 +25,7 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 
     @Override
     public void create(Reservation reservation) {
-        String sql = "INSERT INTO reservations (client_id, room_id, start_date, end_date, payment_status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reservations (client_id, room_id, start_date, end_date, payment_status, total_price) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, reservation.getClientId());
@@ -33,6 +33,7 @@ public class ReservationRepositoryImpl implements ReservationRepository {
             preparedStatement.setDate(3, java.sql.Date.valueOf(reservation.getStartDate()));
             preparedStatement.setDate(4, java.sql.Date.valueOf(reservation.getEndDate()));
             preparedStatement.setString(5, reservation.getPaymentStatus());
+            preparedStatement.setDouble(6, reservation.getTotalPrice());
             preparedStatement.executeUpdate();
             System.out.println("Reservation created successfully.");
         } catch (SQLException e) {
@@ -121,7 +122,8 @@ public class ReservationRepositoryImpl implements ReservationRepository {
                         resultSet.getInt("room_id"),
                         resultSet.getDate("start_date").toLocalDate(),
                         resultSet.getDate("end_date").toLocalDate(),
-                        resultSet.getString("payment_status")
+                        resultSet.getString("payment_status"),
+                        resultSet.getDouble("total_price")
                 ));
             }
         } catch (SQLException e) {

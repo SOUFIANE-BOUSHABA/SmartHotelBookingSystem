@@ -58,13 +58,14 @@ public class ReservationController {
     public void handleReservationCancellation() {
         Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter your client ID: ");
+        int clientId = Integer.parseInt(scanner.nextLine());
+
         System.out.print("Enter the reservation ID to cancel: ");
         int reservationId = Integer.parseInt(scanner.nextLine());
 
-        reservationService.cancel(reservationId);
-        System.out.println("Reservation cancelled successfully.");
+        reservationService.cancel(reservationId , clientId);
     }
-
     public void showStatistics() {
         double occupancyRate = reservationService.calculateOccupancyRate();
         long canceledReservations = reservationService.countCanceledReservations();

@@ -40,8 +40,13 @@ public class ReservationService {
         }
     }
 
-    public void cancel(int reservationId) {
-        reservationRepository.cancel(reservationId);
+    public void cancel(int reservationId , int clientId) {
+        //check if the id  of  user are == id user in reservation
+        if(reservationRepository.isUserReservation(reservationId,clientId)){
+            reservationRepository.cancel(reservationId);
+        }else{
+            System.out.println("Reservation not found.");
+        }
     }
 
     public List<Room> findAvailableRooms(LocalDate startDate, LocalDate endDate) {
@@ -60,8 +65,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.getAllReservations();
         long totalReservations = reservations.size();
         long paidReservations = reservations.stream()
-                .filter(r -> r.getPaymentStatus().equals("PAID"))
-                .count();
+                .filter(r -> r.getPaymentStatus().equals("PAID")).count();
 
         return Math.max(0, (double) paidReservations / totalReservations * 100);
     }

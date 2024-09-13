@@ -10,4 +10,6 @@ public interface ReservationRepository {
     List<Room> findAvailableRooms(LocalDate startDate, LocalDate endDate);
     boolean checkDateAvailability(int roomId, LocalDate startDate, LocalDate endDate);
     List<Reservation> getAllReservations();
+
+    boolean isUserReservation(int reservationId, int clientId);
 }

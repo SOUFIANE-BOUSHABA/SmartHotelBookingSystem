@@ -55,6 +55,21 @@ public class ReservationRepositoryImpl implements ReservationRepository {
             e.printStackTrace();
         }
     }
+    public boolean isUserReservation(int reservationId, int clientId) {
+        String sql = "SELECT * FROM reservations WHERE id = ? AND client_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, reservationId);
+            preparedStatement.setInt(2, clientId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            System.err.println("Failed to check if user is the owner of the reservation.");
+            e.printStackTrace();
+
+        }
+        return false;
+    }
+
 
     @Override
     public List<Room> findAvailableRooms(LocalDate startDate, LocalDate endDate) {

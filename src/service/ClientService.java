@@ -22,14 +22,9 @@ public class ClientService {
         return clientRepository.findById(id);
     }
 
-    public List<Client> findAll() {   return clientRepository.findAll();  }
+    public List<Client> findAll() {  return clientRepository.findAll(); }
 
-    public void updateClient(Client client) {
-        clientRepository.update(client);
-    }
+    public void updateClient(Client client) {  clientRepository.update(client);   }
 
-    public void deleteClient(int id) {
-        clientRepository.delete(id);
-    }
-
+    public void deleteClient(int id) { clientRepository.delete(id);  }
 }

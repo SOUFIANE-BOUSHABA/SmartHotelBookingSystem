@@ -1,6 +1,5 @@
 package repository.impl;
 
-
 import model.Client;
 import repository.ClientRepository;
 import utils.DatabaseConnection;
@@ -9,31 +8,30 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientRepositoryImpl  implements ClientRepository {
+public class ClientRepositoryImpl implements ClientRepository {
 
     private Connection connection;
-
 
     public ClientRepositoryImpl() {
         DatabaseConnection db = DatabaseConnection.getInstance();
         connection = db.getConnection();
 
         if (connection != null) {
-            System.out.println("Connection to database established in ClientDAO!");
+            System.out.println("Connection to database established in ClientRepositoryImpl!");
         } else {
-            System.err.println("Failed to establish connection in ClientDAO.");
+            System.err.println("Failed to establish connection in ClientRepositoryImpl.");
         }
     }
 
-
     @Override
     public void create(Client client) {
-        String sql = "INSERT INTO clients (name, email, phone_number) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO clients (name, email, phone_number, balance) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, client.getName());
             preparedStatement.setString(2, client.getEmail());
             preparedStatement.setString(3, client.getPhone());
+            preparedStatement.setDouble(4, client.getBalance());
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -46,8 +44,6 @@ public class ClientRepositoryImpl  implements ClientRepository {
             e.printStackTrace();
         }
     }
-
-
 
     @Override
     public Client findById(int id) {
@@ -62,7 +58,8 @@ public class ClientRepositoryImpl  implements ClientRepository {
                 client = new Client(resultSet.getInt("client_id"),
                         resultSet.getString("name"),
                         resultSet.getString("email"),
-                        resultSet.getString("phone_number"));
+                        resultSet.getString("phone_number"),
+                        resultSet.getDouble("balance"));
             }
         } catch (SQLException e) {
             System.err.println("Failed to get client.");
@@ -71,8 +68,6 @@ public class ClientRepositoryImpl  implements ClientRepository {
 
         return client;
     }
-
-
 
     @Override
     public List<Client> findAll() {
@@ -86,7 +81,8 @@ public class ClientRepositoryImpl  implements ClientRepository {
                 Client client = new Client(resultSet.getInt("client_id"),
                         resultSet.getString("name"),
                         resultSet.getString("email"),
-                        resultSet.getString("phone_number"));
+                        resultSet.getString("phone_number"),
+                        resultSet.getDouble("balance"));
                 clients.add(client);
             }
         } catch (SQLException e) {
@@ -97,17 +93,16 @@ public class ClientRepositoryImpl  implements ClientRepository {
         return clients;
     }
 
-
-
     @Override
     public void update(Client client) {
-        String sql = "UPDATE clients SET name = ?, email = ?, phone_number = ? WHERE client_id = ?";
+        String sql = "UPDATE clients SET name = ?, email = ?, phone_number = ?, balance = ? WHERE client_id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, client.getName());
             preparedStatement.setString(2, client.getEmail());
             preparedStatement.setString(3, client.getPhone());
-            preparedStatement.setInt(4, client.getId());
+            preparedStatement.setDouble(4, client.getBalance());
+            preparedStatement.setInt(5, client.getId());
             preparedStatement.executeUpdate();
             System.out.println("Client updated successfully.");
         } catch (SQLException e) {
@@ -115,8 +110,6 @@ public class ClientRepositoryImpl  implements ClientRepository {
             e.printStackTrace();
         }
     }
-
-
 
     @Override
     public void delete(int id) {
@@ -131,5 +124,4 @@ public class ClientRepositoryImpl  implements ClientRepository {
             e.printStackTrace();
         }
     }
-
 }

@@ -1,13 +1,12 @@
 package service;
 
-import model.Reservation;
-import model.Room;
-import model.Season;
-import model.SpecialEvent;
+import model.*;
+import repository.ClientRepository;
 import repository.RoomRepository;
 import repository.ReservationRepository;
 import repository.impl.RoomRepositoryImpl;
 import repository.impl.ReservationRepositoryImpl;
+import repository.impl.ClientRepositoryImpl;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,12 +16,15 @@ public class ReservationService {
     private final RoomRepository roomRepository;
     private final SeasonService seasonService;
     private final SpecialEventService specialEventService;
+    private final ClientRepository clientRepository;
 
     public ReservationService() {
         this.reservationRepository = new ReservationRepositoryImpl();
+        this.clientRepository = new ClientRepositoryImpl();
         this.roomRepository = new RoomRepositoryImpl();
         this.seasonService = new SeasonService();
         this.specialEventService = new SpecialEventService();
+
     }
 
     public void createReservation(Reservation reservation) {
@@ -31,7 +33,22 @@ public class ReservationService {
             if (room != null) {
                 double totalPrice = calculateTotalPrice(reservation.getStartDate(), reservation.getEndDate(), room.getPrix());
                 reservation.setTotalPrice(totalPrice);
-                reservationRepository.create(reservation);
+
+                Client client = clientRepository.findById(reservation.getClientId());
+
+                if (client != null) {
+                    if (client.getBalance() >= totalPrice) {
+                        client.setBalance(client.getBalance() - totalPrice);
+                        clientRepository.update(client);
+
+                        reservationRepository.create(reservation);
+                        System.out.println("Reservation created successfully.");
+                    } else {
+                        System.out.println("Insufficient balance for the reservation.");
+                    }
+                } else {
+                    System.out.println("Client not found.");
+                }
             } else {
                 System.out.println("Room not found.");
             }
@@ -40,14 +57,35 @@ public class ReservationService {
         }
     }
 
-    public void cancel(int reservationId , int clientId) {
-        //check if the id  of  user are == id user in reservation
-        if(reservationRepository.isUserReservation(reservationId,clientId)){
-            reservationRepository.cancel(reservationId);
-        }else{
-            System.out.println("Reservation not found.");
+
+    public void cancel(int reservationId, int clientId) {
+        // Check if the reservation belongs to the client
+        if (reservationRepository.isUserReservation(reservationId, clientId)) {
+            Reservation reservation = reservationRepository.getAllReservations().stream()
+                    .filter(r -> r.getId() == reservationId)
+                    .findFirst()
+                    .orElse(null);
+
+            if (reservation != null) {
+                double totalPrice = reservation.getTotalPrice();
+                Client client = clientRepository.findById(clientId);
+                if (client != null) {
+                    client.setBalance(client.getBalance() + totalPrice);
+                    clientRepository.update(client);
+
+                    reservationRepository.cancel(reservationId);
+                    System.out.println(" money returned  successfully");
+                } else {
+                    System.out.println("Client not found.");
+                }
+            } else {
+                System.out.println("Reservation not found.");
+            }
+        } else {
+            System.out.println("Reservation does not belong to YOU HHH");
         }
     }
+
 
     public List<Room> findAvailableRooms(LocalDate startDate, LocalDate endDate) {
         return reservationRepository.findAvailableRooms(startDate, endDate);

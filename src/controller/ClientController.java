@@ -13,24 +13,32 @@ public class ClientController {
         clientService = new ClientService();
     }
 
-    public void createClient(int id ,String name, String email, String phone) {
-        Client client = new Client(id , name, email, phone);
+    public void createClient(int id, String name, String email, String phone, double balance) {
+        Client client = new Client(id, name, email, phone, balance);
         clientService.createClient(client);
     }
+
+
 
     public Client findById(int id) {
         return clientService.findById(id);
     }
+
+
+
 
     public List<Client> findAll() {
         return clientService.findAll();
     }
 
 
-    public void updateClient(int id, String name, String email, String phone) {
-        Client client = new Client(id, name, email, phone);
+
+    public void updateClient(int id, String name, String email, String phone, double balance) {
+        Client client = new Client(id, name, email, phone, balance);
         clientService.updateClient(client);
     }
+
+
 
     public void deleteClient(int id) {
         clientService.deleteClient(id);

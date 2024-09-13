@@ -6,12 +6,14 @@ public class Client {
     private String name;
     private String email;
     private String phone;
+    private double balance;
 
-    public Client(int id, String name, String email, String phone) {
+    public Client(int id, String name, String email, String phone, double balance) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
+        this.balance = balance;
     }
 
     public int getId() {
@@ -44,5 +46,13 @@ public class Client {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }

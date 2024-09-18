@@ -25,6 +25,16 @@ public class ReservationController {
         System.out.print("Enter end date (YYYY-MM-DD): ");
         LocalDate endDate = LocalDate.parse(scanner.nextLine());
 
+        if (startDate.isBefore(LocalDate.now())) {
+            System.out.println("Start date cannot be in the past.");
+            return;
+        }
+
+        if (endDate.isBefore(startDate)) {
+            System.out.println("End date cannot be before the start date.");
+            return;
+        }
+
         List<Room> availableRooms = reservationService.findAvailableRooms(startDate, endDate);
 
         if (availableRooms.isEmpty()) {

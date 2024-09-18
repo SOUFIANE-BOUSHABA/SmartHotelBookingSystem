@@ -59,7 +59,6 @@ public class ReservationService {
 
 
     public void cancel(int reservationId, int clientId) {
-        // Check if the reservation belongs to the client
         if (reservationRepository.isUserReservation(reservationId, clientId)) {
             Reservation reservation = reservationRepository.getAllReservations().stream()
                     .filter(r -> r.getId() == reservationId)

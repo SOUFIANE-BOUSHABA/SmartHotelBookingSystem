@@ -7,10 +7,16 @@ import utils.DatabaseConnection;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReservationRepositoryImpl implements ReservationRepository {
+
     private Connection connection;
+    private final Map<Integer, Boolean> roomAvailabilityMap = new HashMap<>();
+
+
 
     public ReservationRepositoryImpl() {
         DatabaseConnection db = DatabaseConnection.getInstance();
@@ -147,5 +153,63 @@ public class ReservationRepositoryImpl implements ReservationRepository {
         }
         return reservations;
     }
+
+
+
+
+
+
+
+
+
+
+
+    private void loadRoomAvailability() {
+        String sql = "SELECT id FROM rooms";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                roomAvailabilityMap.put(resultSet.getInt("id"), true);
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to load room availability.");
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    public Map<Integer, Room> findAvailableRoomsForMiseENSItuation(LocalDate startDate, LocalDate endDate) {
+        String sql = "SELECT * FROM rooms WHERE id NOT IN (SELECT room_id FROM reservations " +
+                "WHERE payment_status != 'CANCELLED' " +
+                "AND (start_date < ? AND end_date > ?))";
+
+        Map<Integer, Room> availableRoomsMap = new HashMap<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setDate(1, java.sql.Date.valueOf(endDate));
+            preparedStatement.setDate(2, java.sql.Date.valueOf(startDate));
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Room room = new Room(
+                        resultSet.getInt("id"),
+                        RoomType.valueOf(resultSet.getString("roomType")),
+                        resultSet.getDouble("prix"),
+                        resultSet.getInt("hotel_id")
+                );
+                availableRoomsMap.put(room.getRoomNumber(), room);
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to find available rooms.");
+            e.printStackTrace();
+        }
+        return availableRoomsMap;
+    }
+
+
+
+
 
 }

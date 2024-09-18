@@ -10,6 +10,8 @@ import repository.impl.ClientRepositoryImpl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ReservationService {
     private final ReservationRepository reservationRepository;
@@ -137,4 +139,26 @@ public class ReservationService {
 
         return totalPrice;
     }
+
+
+
+
+
+
+
+
+    public Optional<List<Room>> findAvailableRoomsForMiseENSItuation(LocalDate startDate, LocalDate endDate) {
+        List<Room> availableRooms = reservationRepository.findAvailableRooms(startDate, endDate).stream()
+                .filter(room -> room.getPrix() > 120)
+                .collect(Collectors.toList());
+
+        if (availableRooms.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(availableRooms);
+        }
+    }
+
+
+
 }

@@ -234,8 +234,10 @@ public class Main {
             System.out.println( WHITE + "\n--- Reservation Management ---" + RESET);
             System.out.println(GREEN + "1. Create Reservation" + RESET);
             System.out.println(GREEN + "2. Cancel Reservation" + RESET);
+
             System.out.println(GREEN + "3. Show Reservation Statistics" + RESET);
             System.out.println(RED + "4. Back to Main Menu" + RESET);
+            System.out.println(GREEN + "5. create  Reservation for MISE EN SITUATION " + RESET);
 
             System.out.print(CYAN + "Choose an option: " + RESET);
             int choice = Integer.parseInt(scanner.nextLine());
@@ -252,6 +254,9 @@ public class Main {
                     break;
                 case 4:
                     return;
+
+                    case 5:
+                        reservationController.createReservationForMiseEnSituation();
                 default:
                     System.out.println(RED + "Invalid option. Please try again." + RESET);
             }
